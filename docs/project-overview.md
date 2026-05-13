@@ -42,6 +42,10 @@ The project follows a monorepo architecture with the following structure:
   - Limit to 5-8 E2E tests covering critical user journeys (focus on quality over quantity) that are isolated and independent from one another
   - Name E2E test files based on the user journey they test (e.g., `todo-workflow.spec.js`)
 
+### Coding
+- Follow the project's coding style and quality principles in [Coding Guidelines](./coding-guidelines.md).
+- Use this guide for formatting consistency, import organization, linting expectations, and maintainable practices such as DRY.
+
 ## Getting Started
 
 ### Prerequisites
