@@ -58,4 +58,40 @@ describe('Items API Integration', () => {
     const deleted = listResponse.body.find((item) => item.id === createdItem.id);
     expect(deleted).toBeUndefined();
   });
+
+  it('creates an item with due_date and details, then verifies them', async () => {
+    const uniqueName = `dated-item-${Date.now()}`;
+    const response = await request(app)
+      .post('/api/items')
+      .send({ name: uniqueName, due_date: '2026-12-31', details: 'Integration detail' })
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(201);
+    expect(response.body.due_date).toBe('2026-12-31');
+    expect(response.body.details).toBe('Integration detail');
+    createdIds.add(response.body.id);
+  });
+
+  it('updates an item name and marks it complete via PUT', async () => {
+    const createdItem = await createItem(`update-item-${Date.now()}`);
+
+    const updateResponse = await request(app)
+      .put(`/api/items/${createdItem.id}`)
+      .send({ name: 'Updated via integration', completed: true })
+      .set('Accept', 'application/json');
+
+    expect(updateResponse.status).toBe(200);
+    expect(updateResponse.body.name).toBe('Updated via integration');
+    expect(updateResponse.body.completed).toBe(1);
+  });
+
+  it('returns 404 when updating a non-existent item', async () => {
+    const response = await request(app)
+      .put('/api/items/999999999')
+      .send({ name: 'Ghost' })
+      .set('Accept', 'application/json');
+
+    expect(response.status).toBe(404);
+    expect(response.body).toHaveProperty('error', 'Item not found');
+  });
 });
